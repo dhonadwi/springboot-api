@@ -24,6 +24,29 @@ public class ProductService {
     return productRepo.save(product);
   }
 
+  public ResponseEntity<Object> findOne(Long id) {
+    Optional<Product> product = productRepo.findById(id);
+    if (!product.isPresent()) {
+      ResponseMessage errorMessage = new ResponseMessage("data not found", false, product);
+      return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+    ResponseMessage resMessage = new ResponseMessage("data found", true, product.get());
+    return new ResponseEntity<>(resMessage, HttpStatus.OK);
+  }
+
+  public ResponseEntity<Object> findAll() {
+    ResponseMessage responseMessage = new ResponseMessage("data found", true, productRepo.findAll());
+    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+  }
+
+  public void removeOne(Long id) {
+    productRepo.deleteById(id);
+  }
+
+  public List<Product> findByNameContains(String name) {
+    return productRepo.findByNameContains(name);
+  }
+
   public class ResponseMessage {
     private String message;
     private boolean status;
@@ -60,26 +83,4 @@ public class ProductService {
     }
   }
 
-  public ResponseEntity<Object> findOne(Long id) {
-    Optional<Product> product = productRepo.findById(id);
-    if (!product.isPresent()) {
-      ResponseMessage errorMessage = new ResponseMessage("data not found", false, product);
-      return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
-    }
-    ResponseMessage resMessage = new ResponseMessage("data found", true, product.get());
-    return new ResponseEntity<>(resMessage, HttpStatus.OK);
-  }
-
-  public ResponseEntity<Object> findAll() {
-    ResponseMessage responseMessage = new ResponseMessage("data found", true, productRepo.findAll());
-    return new ResponseEntity<>(responseMessage, HttpStatus.OK);
-  }
-
-  public void removeOne(Long id) {
-    productRepo.deleteById(id);
-  }
-
-  public List<Product> findByNameContains(String name) {
-    return productRepo.findByNameContains(name);
-  }
 }
